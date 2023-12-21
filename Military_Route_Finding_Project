@@ -1,0 +1,650 @@
+#include<iostream>
+#include <limits>//for infinity
+#include<cstdlib>//for rand()
+#include<time.h>
+#include<fstream>//for file handling
+#include <windows.h>//for graphics
+#include<iomanip>//for output manipulation on console
+#include<chrono>
+#include<ctime>
+
+using namespace std;
+
+//no. of nodes(size of 2d array)
+#define MAX_VERTICES 8
+#define MAX2_VERTICES 8
+
+const int INF = numeric_limits<int>::max();
+
+void dijkstra(int graph[MAX_VERTICES][MAX_VERTICES], int start, int distances[MAX_VERTICES], int parent[MAX_VERTICES]) {
+    bool visited[MAX_VERTICES] = { false };
+    start--; // Adjust the starting vertex to 0-based index
+    distances[start] = 0;
+
+    for (int count = 0; count < MAX_VERTICES; ++count) {
+        int u = -1; // node
+        int min_distance = INF;
+
+        // Find the vertex with the minimum distance value
+        for (int v = 0; v < MAX_VERTICES; ++v) {
+            if (!visited[v] && distances[v] < min_distance) {
+                u = v; // stores node
+                min_distance = distances[v];
+            }
+        }
+
+        // Mark the selected vertex as visited
+        visited[u] = true;
+
+        // Update distance values and track the parent for the neighboring vertices
+        for (int v = 0; v < MAX_VERTICES; ++v) {
+            int weight_uv = graph[u][v];
+
+            if (!visited[v] && weight_uv > 0 && distances[u] + weight_uv < distances[v]) {
+                distances[v] = distances[u] + weight_uv;
+                parent[v] = u;
+            }
+        }
+    }
+}
+
+void printShortestPath(int parent[MAX_VERTICES], int j) {
+    if (parent[j] == -1) {
+        cout << j+1 << " ";
+        return;
+    }
+
+    printShortestPath(parent, parent[j]);
+    cout << j+1 << " ";
+}
+
+
+
+//dijkstra 2
+void dijkstra2(int graph[MAX2_VERTICES][MAX2_VERTICES], int start, int distances[MAX2_VERTICES], int parent[MAX2_VERTICES],int eb) {
+	bool visited[MAX2_VERTICES] = { false };
+	start--;
+	distances[start] = 0;
+
+	for (int count = 0; count < MAX2_VERTICES ; ++count) {
+		int u = -1; //node
+		int min_distance = INF;
+
+		// Find the vertex with the minimum distance value
+		for (int v = 0; v < MAX2_VERTICES; ++v) {
+			if (!visited[v] && distances[v] < min_distance) {
+				u = v;//stores node
+				min_distance = distances[v];
+			}
+		}
+ 
+		// Mark the selected vertex as visited
+		visited[u] = true;
+
+		// Update distance values and track the parent for the neighboring vertices
+		for (int v = 0; v < MAX2_VERTICES; ++v) {
+			 if (v == (eb - 1)) {
+        continue;
+    }
+			int weight_uv = graph[u][v];
+
+			if (!visited[v] && weight_uv > 0 && distances[u] + weight_uv < distances[v]) {
+				distances[v] = distances[u] + weight_uv;
+				parent[v] = u;
+			}
+		}
+	}
+}
+
+void printShortestPath2(int parent[MAX2_VERTICES], int j) {
+	if (parent[j] == -1) {
+		cout << j+1 << " ";
+		return;
+	}
+
+	printShortestPath2(parent, parent[j]);
+	cout << j+1 << " ";
+}
+
+int main() {
+   
+
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+   
+    // Get the current time point
+    auto currentTimePoint = std::chrono::system_clock::now();
+
+    // Convert the time point to a time_t
+    time_t currentTime = chrono::system_clock::to_time_t(currentTimePoint);
+
+    // Convert the time_t to a string representation
+    string currentTimeStr = ctime(&currentTime);
+
+    // Display the current time
+     cout<<" This operation has started at :"<< currentTimeStr;
+
+    cout <<"\t\t\t\t\t\t\n";
+
+    
+	cout <<"\t\t\t\t\t\t";
+	SetConsoleTextAttribute(hConsole, BACKGROUND_GREEN | FOREGROUND_RED | BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+	cout<<"|                                                                  |";
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED| FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+	SetConsoleTextAttribute(hConsole, 256);
+	cout << ".\n";
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED| FOREGROUND_GREEN | FOREGROUND_BLUE);
+	
+	cout <<"\t\t\t\t\t\t";
+	SetConsoleTextAttribute(hConsole, BACKGROUND_GREEN | FOREGROUND_RED | BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+	cout<<"|        Welcome to MILLITARY PLANNING WING OF PAK ARMY            |";
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED| FOREGROUND_GREEN | FOREGROUND_BLUE);
+	
+	SetConsoleTextAttribute(hConsole, 256);
+	cout << ".\n";
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN| FOREGROUND_GREEN | FOREGROUND_BLUE);
+	
+	cout <<"\t\t\t\t\t\t";
+	SetConsoleTextAttribute(hConsole, BACKGROUND_GREEN | FOREGROUND_RED | BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_INTENSITY);
+	cout<<"|__________________________________________________________________|";
+    SetConsoleTextAttribute(hConsole, FOREGROUND_RED| FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+    SetConsoleTextAttribute(hConsole, 256);
+	cout << ".\n";
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED| FOREGROUND_GREEN | FOREGROUND_BLUE); 
+	   
+    cout<<endl;
+    
+    //delay
+    Sleep(200);
+    
+    SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+    
+	int graph[MAX_VERTICES][MAX_VERTICES] ;
+
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+
+	cout << "\t\t\t-> Keeping in view the requirements of frequent military operations,\n\t\t\t  " 
+	  <<"this place is specially designed for "
+		<< "providing best and optimized routing solutions around the active bases of this area.\n\n";
+    
+    Sleep(1000);
+	//ask the user for communication(connection/edges) between the bases
+	cout << "\t\t\t-> Please tell about the connection between the bases.  :\n" << endl;
+Sleep(1000);
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+
+	cout << "\t\t\t-> Enter A if you want to generate the graph automatically\n";
+		cout<<"\t\t\t-> OR Enter B if you want to add bases manually.\n";
+	char a;
+	cin >> a;
+	
+	while(a!='A' && a!='B'){
+			SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		cout<<"Please enter either A or B!";
+		cin>>a;
+	}
+
+	if (a == 'A') {
+		int count;
+		srand(time(NULL));
+
+		for (int i = 0; i < MAX_VERTICES; i++) {
+			count = 0;
+			for (int j = 0; j < MAX_VERTICES; j++) {
+				if (i == j) {
+					graph[i][j] = 0;
+					continue;
+				}
+
+				graph[i][j] = 1 + (rand() % 100);
+				count++;
+			}
+
+			// Check count after the inner loop
+			if (count > 4) {
+				for (int k = 0; k < MAX_VERTICES; k++) {
+					if (count <= 4)
+						break;
+					if (graph[i][k] != 0) {
+						graph[i][k] = 0;
+						count--;
+					}
+				}
+			}
+		}
+	}
+
+	else if (a == 'B') {
+		       
+           SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+           Sleep(1000);
+		cout << "Enter 0 for no connection otherwise enter distance between the bases in miles.\n" << endl;
+		Sleep(1000);
+		for (int i = 0; i < MAX_VERTICES; i++) {
+
+			int count = 0;// to count no. of edges
+			
+			for (int j = 0; j < MAX_VERTICES; j++) { 
+
+				if (i == j) {   //to prevent loop
+					graph[i][j] = 0;
+				}
+				else {
+
+						SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+
+					cout << "For base " << (i + 1) << " and base " << (j + 1) << ":";
+					cin >> graph[i][j];//to ask for weights of edges
+				    
+					while (1) {
+
+						if (graph[i][j] < 0) {
+								SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+							cout << "Distance cannot be negative. Please enter again for base " << (i + 1)
+								<< "and base " << (j + 1) << " :";
+							cin >> graph[i][j];
+						}
+						if (graph[i][j] > 0) {
+							count++;
+							break;
+						}
+						if (graph[i][j] == 0) {
+
+							break;
+						}
+
+					}
+				}
+			}
+
+			//check for minimum 2 edges
+			if (count < 2) {
+				for (int j = 0; j < MAX_VERTICES; j++) {
+
+					if (count == 2) {
+						break;
+					}
+
+
+					if (i != j) {
+						if (graph[i][j] == 0) {
+								SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+							cout << "Make atleast 2 connections for base " << (i + 1) << endl;
+							cout << "Updating value for base" << (i + 1) << " and " << (j + 1)
+								<< ". Please enter again." << endl;
+							cin >> graph[i][j];
+							
+
+							while (graph[i][j] < 0 || graph[i][j] == 0) {
+
+								if (graph[i][j] < 0) {
+										SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+									cout << "Distance cannot be negative. Please enter again for base " << (i + 1)
+										<< "and base " << (j + 1) << " :";
+									cin >> graph[i][j];
+								
+								}
+
+								if (graph[i][j] == 0) {
+										SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+									cout << " 0 not correct. Make more than 2 connections for base." << (i + 1) << endl;
+									cin >> graph[i][j];
+								
+								}
+							}
+
+							count++;
+						}
+					}
+				}
+
+			}
+
+			//check for maximum 4 edges
+			if (count > 4) {
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+				cout << "Make maximum 4 connections for base " << (i + 1) << endl;
+
+				for (int j = 0; j < MAX_VERTICES; j++) {
+
+					if (count == 4) {
+						break;
+					}
+
+					if (i != j) {
+						if (graph[i][j] != 0) {
+							
+							cout << "Updating value for base " << (i + 1) << " and " << (j + 1) <<endl;
+                            Sleep(200);
+                            
+							graph[i][j] = 0;
+							
+
+							count--;
+						}
+					}
+				}
+			}
+			cout << endl;
+
+		}
+	}
+	
+	ofstream file("edges.txt",ios::app);
+	for(int i=0;i<MAX_VERTICES;i++){
+		 
+		 file<<"\nWriting paths for base "<<(i+1)<<":"<<endl;
+		 
+		 for(int j=0;j<MAX_VERTICES;j++){
+		 	file<<graph[i][j]<<" ";
+		 }	 
+	}
+	file.close();
+	
+	SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+	cout << "Your connections are:" << endl;
+	Sleep(1000);
+	for (int i = 0; i < MAX_VERTICES; i++) {
+		for (int j = 0; j < MAX_VERTICES; j++) {
+			cout <<setw(4) <<"  |  " <<setw(4)<< graph[i][j] << " ";
+		}
+		cout << endl;
+	}
+    
+
+	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+
+	//terrains
+	Sleep(1000);
+	cout << "\n\nIts time to select terrains based on your military operation:" << endl;
+	cout<<"Loading terrains";
+	Sleep(1000);
+	cout<<" .";
+	Sleep(1000);
+	cout<<" .";
+	Sleep(1000);
+	cout<<" .";
+	Sleep(1000);
+	cout << "\nThere are three terrains available in this region:\n(i)Watery Terrain\n(ii)Rough Terrain\n(iii)Plain Terrain\n";
+	cout << "Please enter 'W' for watery terrain, 'R' for rough terrain, 'P' for plain terrain:\n";
+	cout << "For Watery terrain, +2 will be incremented to distance.\nFor Rough terrain, +3 will be incremented to distance.\n"
+		<< "For Plain terrain, +1 will be incremented to distance.\n";
+	char terr;
+
+	for (int i = 0; i < MAX_VERTICES; i++) {
+
+		for (int j = 0; j < MAX_VERTICES; j++) {
+
+			if (graph[i][j] == 0) {
+				continue;
+			}
+	SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+   // Sleep(400);
+			cout << "Enter terrain for base " << (i + 1) << " and base " << (j + 1) << endl;
+			cin >> terr;
+            
+            //INPUT VALIDATION
+			while (terr != 'W' && terr != 'R' && terr != 'P') {
+					SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+				cout << "Please enter valid choice. (W,R,P)" << endl;
+					SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+				cin >> terr;
+			}
+
+
+			if (graph[i][j] != 0) {
+				if (terr == 'W') {
+
+					graph[i][j] += 2;
+					//graph[j][i]=graph[i][j];
+					SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+					cout << "(Adding 2....)";
+				//	Sleep(800);
+					cout<<" Now the updated distance for base " << (i + 1)
+						<< " and base " << (j + 1) << " is: " << graph[i][j] << endl;
+				}
+				else if (terr == 'P') {
+					graph[i][j] += 1;
+						SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+					cout << "(Adding 1....)";
+					Sleep(800);
+					cout<<" Now the updated distance for base " << (i + 1)
+						<< " and base " << (j + 1) << " is: " << graph[i][j] << endl;
+				}
+				else {
+					graph[i][j] += 3;
+						SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+					cout << "(Adding 3...)";
+					Sleep(800);
+					cout<<" Now the updated distance for base " << (i + 1)
+						<< " and base " << (j + 1) << " is: " << graph[i][j] << endl;
+				}
+			}
+		}
+	}
+
+	//upper equal to lower.
+	for (int i = 0; i < MAX_VERTICES; i++) {
+		for (int j = i + 1; j < MAX_VERTICES; j++) {
+			graph[j][i] = graph[i][j];
+		}
+	}
+
+	SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+	cout << "\nYour connections are:" << endl;
+	Sleep(1000);
+	for (int i = 0; i < MAX_VERTICES; i++) {
+		for (int j = 0; j < MAX_VERTICES; j++) {
+		//	cout << " | "<<graph[i][j] << " | ";
+		cout << setw(5) << "|" << setw(5) << graph[i][j] << " ";
+		}
+		cout << endl;
+	}
+	
+
+	cout << endl; 
+	
+	//writing paths after terrains
+     	ofstream file2("edges.txt",ios::app);
+     for(int i=0;i<MAX_VERTICES;i++){
+     
+     	file2<<"\nWriting paths for base "<<(i+1)<<"after adding terrains' weights.:"<<endl;
+     	for(int j=0;j<MAX_VERTICES;j++){
+     		file2<<graph[i][j]<<" ";
+		 }
+	 }
+    file2.close();
+
+	//algorithm
+    int start_vertex;
+	int distances[MAX_VERTICES];
+	fill_n(distances, MAX_VERTICES, INF);
+
+	int parent[MAX_VERTICES];
+	fill_n(parent, MAX_VERTICES, -1);
+
+
+     	SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+     		
+     	choice:
+     try{
+     
+     int ch;
+     Sleep(1000);
+     cout<<"Enter '0' if you want to print the shortest path.\n";
+     Sleep(500);
+	  cout<<"Enter '1' if you want to find the distance of a path\n";
+	  Sleep(500);
+	  cout<<"Enter '2' if one of your base is under enemy control and "
+	  <<"you want to find the shortest path skipping that base.\n";
+	  cout<<endl;
+	  
+	  cin>>ch;
+	  
+	  if(ch!=0 && ch!=1 && ch!=2){
+	  	throw ('c');
+	  }
+	  
+	  if(ch==0){
+	  	
+	cout << "Enter main base:" << endl;
+	cin >> start_vertex;
+	
+    while(start_vertex<1 || start_vertex>8){
+    	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+    	cout<<"\nPlease enter base between 1 and 8 as there are 8 active bases.\n";
+    	cin>>start_vertex;
+	}
+	
+	//write base to the file.
+	ofstream file4("edges.txt",ios::app);
+	file4<<endl<<"The main base entered by the user:"<<start_vertex<<endl;
+	
+	dijkstra(graph, start_vertex, distances, parent);
+
+	// Result: distances array contains the shortest path distances from start_vertex
+    
+	// Example: Print shortest paths from start_vertex to all other vertices
+	cout<<"\nHere are the shortest paths!\n";
+	Sleep(1000);
+	for (int i = 0; i <MAX_VERTICES; ++i) {
+		
+		SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		
+		cout << "Shortest path from base "<<start_vertex<< " to base " << i+1 << ": ";
+		printShortestPath(parent, i);
+		cout << " (Distance: " << distances[i] << ")\n";
+		Sleep(1000);
+	}
+	  }
+	  
+	  
+	  if(ch==1){
+	  	int size;
+	  	SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	  	cout<<"Enter the total no. of bases which you want to find the distance between:"<<endl;
+	  	cin>>size;
+	  	
+	  	//INPUT VALIDATION
+	  	while(!(size>=1 && size<=8)){
+	  		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+	  				cout<<"Please enter size between 1 and 8 as there are 8 active bases:";
+	  				cin>>size;
+		  }
+		  
+	  	int *l_array=new int[size];
+		  	
+	  	SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	  	cout<<"Enter path to find the length of: (Example: 5231)"<<endl;
+	  	for(int i=0;i<size;i++){
+	  		cin>>l_array[i];
+	  	
+	  		//INPUT VALIDATION
+  		while(l_array[i]<1 || l_array[i]>8){
+  			SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+	  				cout<<"Please enter base between 1 and 8 as there as 8 active bases:";
+  				cin>>l_array[i];
+			  }
+		}
+		
+		ofstream file3("edges.txt",ios::app);
+		file3<<"\nWriting path to the file:\n";
+		for(int i=0;i<size;i++){
+			file3<<l_array[i]<<" ";
+		}
+		
+	  	int sum=0;
+	  	for(int i=0;i<size-1;i++){
+	  	
+	  			sum+=graph[l_array[i]-1][l_array[i+1]-1];
+		  }
+		  cout<<"Calculating distance";
+	  	Sleep(1000);
+	  	cout<<" .";
+	  	Sleep(1000);
+	  	cout<<" .";
+	  	cout<<"Distance:"<<sum<<endl;
+	  }
+	  
+	 if(ch==2){
+	 	int e_arr[MAX2_VERTICES][MAX2_VERTICES];
+	 	int eb; //enemy_base
+	 	SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	 	cout<<"Enter the base number(1-8) which is under enemy control:"<<endl;
+	 	cin>>eb;
+	 	
+	 	//input validation
+	 	while(1){
+	 		if(eb<1 || eb>8){
+	 			SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+	 			cout<<"Please enter base between 1 and 8 as there as 8 active bases:";
+  				cin>>eb;
+			 }
+			 else{
+			 	break;
+			 }
+		 }
+		 
+	 	for(int i=0;i<MAX2_VERTICES;i++){
+	 		for(int j=0;j<MAX2_VERTICES;j++){
+			 
+	 		if(i==(eb-1) || j==(eb-1)){
+	 			continue;
+			 }
+			 else{
+			 	e_arr[i][j]=graph[i][j];
+			 }
+		   }
+	    }
+			int start_vertex2;
+			cout << "Enter main base:" << endl;
+	        cin >> start_vertex2;
+		 
+		 
+		 
+	int distances2[MAX2_VERTICES];
+	fill_n(distances2, MAX2_VERTICES, INF);
+
+	int parent2[MAX2_VERTICES];
+	fill_n(parent2, MAX2_VERTICES, -1);
+	
+	
+		 dijkstra2(e_arr,start_vertex2,distances2,parent2,eb);
+		 
+		 // Example: Print shortest paths from start_vertex to all other vertices
+	    for (int i = 0; i <MAX2_VERTICES; ++i) {
+	    	if(i==(eb-1)){
+	    		continue;
+			}
+			
+			SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+			Sleep(1000);
+		cout << "Shortest path from base "<<start_vertex2<< " to base " << i+1 << ": ";
+		printShortestPath2(parent2, i);
+		cout << " (Distance: " << distances2[i] << ")\n";
+	   }
+	 }
+	
+	}
+	catch(char a){
+		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		cout<<"Runtime error..! You entered an invalid choice. Please enter either 0,1,2";
+		goto choice;
+	}
+	cout<<"Press 1 if you want to perform other functionalities as well or 0 to exit. \n";
+	int i;
+	
+	cin>>i;
+	if(i==1)
+	goto choice;
+	else
+	return 0;
+}
